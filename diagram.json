@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "author": "joão victor alcântara",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht", "top": -140, "left": -220, "attrs": {} },
+    { "type": "wokwi-potentiometer", "id": "soil", "top": 80, "left": -220, "attrs": {} },
+    { "type": "wokwi-photoresistor-sensor", "id": "ldr", "top": 210, "left": -220, "attrs": {} },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn",
+      "top": 342.2,
+      "left": -192,
+      "attrs": { "color": "blue" }
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled",
+      "top": -150,
+      "left": 250,
+      "attrs": { "i2cAddress": "0x3c" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledIrrigacao",
+      "top": 70,
+      "left": 310,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledAlerta",
+      "top": 145,
+      "left": 310,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "ledLuz",
+      "top": 220,
+      "left": 310,
+      "attrs": { "color": "white" }
+    },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 295, "left": 300, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo", "top": 380, "left": 280, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "dht:VCC", "red", [] ],
+    [ "esp:GND.1", "dht:GND", "black", [] ],
+    [ "esp:15", "dht:SDA", "green", [] ],
+    [ "esp:3V3", "soil:VCC", "red", [] ],
+    [ "esp:GND.1", "soil:GND", "black", [] ],
+    [ "esp:34", "soil:SIG", "green", [] ],
+    [ "esp:3V3", "ldr:VCC", "red", [] ],
+    [ "esp:GND.1", "ldr:GND", "black", [] ],
+    [ "esp:35", "ldr:AO", "green", [] ],
+    [ "esp:27", "btn:1.l", "green", [] ],
+    [ "esp:GND.1", "btn:2.l", "black", [] ],
+    [ "esp:3V3", "oled:VCC", "red", [] ],
+    [ "esp:GND.1", "oled:GND", "black", [] ],
+    [ "esp:21", "oled:SDA", "blue", [] ],
+    [ "esp:22", "oled:SCL", "yellow", [] ],
+    [ "esp:25", "ledIrrigacao:A", "green", [] ],
+    [ "esp:GND.1", "ledIrrigacao:C", "black", [] ],
+    [ "esp:26", "ledAlerta:A", "red", [] ],
+    [ "esp:GND.1", "ledAlerta:C", "black", [] ],
+    [ "esp:33", "ledLuz:A", "white", [] ],
+    [ "esp:GND.1", "ledLuz:C", "black", [] ],
+    [ "esp:14", "buzzer:1", "orange", [] ],
+    [ "esp:GND.1", "buzzer:2", "black", [] ],
+    [ "esp:18", "servo:PWM", "orange", [] ],
+    [ "esp:5V", "servo:V+", "red", [] ],
+    [ "esp:GND.1", "servo:GND", "black", [] ]
+  ],
+  "dependencies": {}
+}
