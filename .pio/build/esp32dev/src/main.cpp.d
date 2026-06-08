@@ -207,4 +207,7 @@
  .pio/libdeps/esp32dev/Adafruit\ BusIO/Adafruit_SPIDevice.h \
  /Users/alc-joao/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
  /Users/alc-joao/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
- .pio/libdeps/esp32dev/Adafruit\ SSD1306/Adafruit_SSD1306.h
+ .pio/libdeps/esp32dev/Adafruit\ SSD1306/Adafruit_SSD1306.h \
+ .pio/libdeps/esp32dev/ESP32Servo/src/ESP32Servo.h \
+ .pio/libdeps/esp32dev/ESP32Servo/src/ESP32PWM.h \
+ /Users/alc-joao/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-ledc.h
