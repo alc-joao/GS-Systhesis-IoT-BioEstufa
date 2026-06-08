@@ -178,19 +178,19 @@ Modificar valores dos sensores para observar:
 
 ## Circuito ESP32
 
-Adicionar imagem do circuito.
+![alt text](image.png)
 
 ---
 
 ## Simulação
 
-Adicionar captura do Wokwi.
+![alt text](image-1.png)
 
 ---
 
 ## OLED
 
-Adicionar captura do display.
+![alt text](image-2.png)
 
 ---
 
