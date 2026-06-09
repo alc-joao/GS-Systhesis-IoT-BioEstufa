@@ -293,7 +293,7 @@ npm run dev
 
 ![alt text](image-6.png)
 
-* api/status
+* /api/status
 
 ![alt text](image-7.png)
 
@@ -303,15 +303,15 @@ npm run dev
 
 ## Dashboard
 
-https://gs-systhesis-io-t-dashboard.vercel.app/
+[Dashboard Online](https://gs-systhesis-io-t-dashboard.vercel.app/)
 
 ## Repositório Dashboard
 
-https://github.com/alc-joao/GS-Systhesis-IoT-Dashboard
+[GS-Systhesis-IoT-Dashboard](https://github.com/alc-joao/GS-Systhesis-IoT-Dashboard)
 
 ## Repositório IoT
 
-https://github.com/alc-joao/GS-Systhesis-IoT-BioEstufa
+[GS-Systhesis-IoT-BioEstufa](https://github.com/alc-joao/GS-Systhesis-IoT-BioEstufa)
 
 ---
 
