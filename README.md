@@ -317,7 +317,7 @@ npm run dev
 
 # 🎥 Vídeo Pitch
 
-Adicionar link do vídeo de apresentação.
+https://www.youtube.com/watch?v=SXyj7NUR-nc
 
 ---
 
