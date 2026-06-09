@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
+#include <HTTPClient.h>
 #include <DHT.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -30,6 +31,9 @@
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
 
+// IP Network do Next.js no seu Mac
+const char* dashboardApiUrl = "http://10.60.32.213:3000/api/iot";
+
 DHT dht(DHTPIN, DHTTYPE);
 WebServer server(80);
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -51,6 +55,7 @@ String statusEstufa = "NORMAL";
 
 unsigned long ultimaLeitura = 0;
 unsigned long ultimoClique = 0;
+unsigned long ultimoEnvioDashboard = 0;
 
 void lerSensores() {
   temperatura = dht.readTemperature();
@@ -90,6 +95,8 @@ void controlarEstufa() {
     statusEstufa = "IRRIGANDO";
   } else if (luzArtificialAtiva) {
     statusEstufa = "LUZ ARTIFICIAL";
+  } else if (anguloServo > 0) {
+    statusEstufa = "VENTILACAO ATIVA";
   } else {
     statusEstufa = "NORMAL";
   }
@@ -153,6 +160,44 @@ String geralJSON() {
   return json;
 }
 
+void enviarDadosDashboard() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Dashboard: Wi-Fi desconectado");
+    return;
+  }
+
+  WiFiClient client;
+  HTTPClient http;
+
+  String json = geralJSON();
+
+  Serial.println("Enviando dados para o dashboard Next...");
+  Serial.println(json);
+
+  http.begin(client, dashboardApiUrl);
+  http.addHeader("Content-Type", "application/json");
+
+  int codigoResposta = http.POST(json);
+
+  Serial.print("Resposta Dashboard Next: ");
+  Serial.println(codigoResposta);
+
+  if (codigoResposta > 0) {
+    Serial.println(http.getString());
+  } else {
+    Serial.println("Erro ao enviar para dashboard Next");
+  }
+
+  http.end();
+}
+
+void enviarJSON(String json) {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+  server.send(200, "application/json", json);
+}
+
 void atualizarOLED() {
   display.clearDisplay();
   display.setTextSize(1);
@@ -194,101 +239,46 @@ void atualizarOLED() {
     display.print("Alerta: ");
     display.println(alertaCritico ? "SIM" : "NAO");
     display.println();
-    display.println("Botao troca tela");
+    display.println("POST Next API");
   }
 
   display.display();
 }
 
 void handleDashboard() {
-  String html = R"rawliteral(
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Systhesis BioEstufa</title>
-<style>
-body{margin:0;background:radial-gradient(circle at top,#172554,#020617 65%);color:white;font-family:Arial,sans-serif;padding:24px;text-align:center}
-h1{color:#7df9ff}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:900px;margin:0 auto}
-.card{background:#0f172a;border:1px solid rgba(125,249,255,.25);border-radius:18px;padding:20px}
-.label{color:#94a3b8;font-size:14px}
-.value{font-size:28px;font-weight:bold;color:#38bdf8}
-.status{margin-top:24px;font-size:24px;font-weight:bold;color:#22c55e}
-.critico{color:#ef4444}
-.footer{margin-top:26px;color:#94a3b8;font-size:13px}
-</style>
-</head>
-<body>
-<h1>SYSTHESIS BIOESTUFA</h1>
-<p>Dashboard IoT para cultivo em ambientes extremos</p>
-
-<div class="grid">
-<div class="card"><div class="label">Temperatura</div><div class="value" id="temperatura">--</div></div>
-<div class="card"><div class="label">Umidade do Ar</div><div class="value" id="umidadeAr">--</div></div>
-<div class="card"><div class="label">Umidade do Solo</div><div class="value" id="umidadeSolo">--</div></div>
-<div class="card"><div class="label">Luminosidade</div><div class="value" id="luminosidade">--</div></div>
-<div class="card"><div class="label">Irrigação</div><div class="value" id="irrigacao">--</div></div>
-<div class="card"><div class="label">Luz Artificial</div><div class="value" id="luzArtificial">--</div></div>
-<div class="card"><div class="label">Servo Ventilação</div><div class="value" id="servo">--</div></div>
-<div class="card"><div class="label">Alerta</div><div class="value" id="alerta">--</div></div>
-</div>
-
-<div class="status" id="status">Carregando...</div>
-<div class="footer">Endpoints JSON: /api/sensores | /api/status | /api/atuadores | /api/geral</div>
-
-<script>
-async function atualizarDashboard(){
-const r=await fetch('/api/geral');
-const d=await r.json();
-
-temperatura.innerText=d.temperatura+' °C';
-umidadeAr.innerText=d.umidadeAr+' %';
-umidadeSolo.innerText=d.umidadeSolo+' %';
-luminosidade.innerText=d.luminosidade+' %';
-irrigacao.innerText=d.irrigacaoAtiva?'ON':'OFF';
-luzArtificial.innerText=d.luzArtificialAtiva?'ON':'OFF';
-servo.innerText=d.servoVentilacao+'°';
-alerta.innerText=d.alertaCritico?'SIM':'NAO';
-
-status.innerText='Status: '+d.status;
-if(d.alertaCritico){status.classList.add('critico')}else{status.classList.remove('critico')}
-}
-atualizarDashboard();
-setInterval(atualizarDashboard,2000);
-</script>
-</body>
-</html>
-)rawliteral";
-
+  String html = "<html><body><h1>Systhesis BioEstufa</h1><pre>";
+  html += geralJSON();
+  html += "</pre></body></html>";
   server.send(200, "text/html", html);
 }
 
 void handleSensores() {
-  server.send(200, "application/json", sensoresJSON());
+  enviarJSON(sensoresJSON());
 }
 
 void handleStatus() {
-  server.send(200, "application/json", statusJSON());
+  enviarJSON(statusJSON());
 }
 
 void handleAtuadores() {
-  server.send(200, "application/json", atuadoresJSON());
+  enviarJSON(atuadoresJSON());
 }
 
 void handleGeral() {
-  server.send(200, "application/json", geralJSON());
+  enviarJSON(geralJSON());
 }
 
 void handleNaoEncontrado() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
   server.send(404, "application/json", "{\"erro\":\"Endpoint nao encontrado\"}");
 }
 
 void configurarWiFi() {
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   Serial.println("Conectando ao Wi-Fi...");
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -296,8 +286,10 @@ void configurarWiFi() {
 
   Serial.println();
   Serial.println("Wi-Fi conectado!");
-  Serial.print("IP Dashboard: ");
+  Serial.print("IP Local ESP32: ");
   Serial.println(WiFi.localIP());
+  Serial.print("Dashboard Next API: ");
+  Serial.println(dashboardApiUrl);
 }
 
 void configurarRotas() {
@@ -348,6 +340,7 @@ void setup() {
   lerSensores();
   controlarEstufa();
   atualizarOLED();
+  enviarDadosDashboard();
 
   Serial.println("Sistema iniciado com sucesso.");
 }
@@ -356,7 +349,7 @@ void loop() {
   server.handleClient();
   verificarBotao();
 
-  if (millis() - ultimaLeitura >= 2000) {
+  if (millis() - ultimaLeitura >= 1000) {
     ultimaLeitura = millis();
 
     lerSensores();
@@ -364,7 +357,12 @@ void loop() {
     atualizarOLED();
 
     Serial.println(geralJSON());
-    Serial.print("IP Dashboard: ");
+    Serial.print("IP Local ESP32: ");
     Serial.println(WiFi.localIP());
+  }
+
+  if (millis() - ultimoEnvioDashboard >= 1000) {
+    ultimoEnvioDashboard = millis();
+    enviarDadosDashboard();
   }
 }
