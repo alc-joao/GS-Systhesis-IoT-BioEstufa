@@ -2,57 +2,91 @@
 
 ## 👨‍💻 Integrantes
 
-- João Victor Alcântara — RM562707
-- Phillipo Barbosa — RM565399
-- Eduardo Martins — RM562259
+* João Victor Alcântara — RM562707
+* Phillipo Barbosa — RM565399
+* Eduardo Martins — RM562259
 
 ---
 
 # 📌 Descrição do Projeto
 
-Protótipo IoT desenvolvido para monitoramento e automação de uma bioestufa inteligente voltada para produção de alimentos em colônias espaciais.
+A Systhesis BioEstufa Espacial é um protótipo IoT desenvolvido para monitoramento e automação de uma bioestufa inteligente destinada à produção de alimentos em colônias espaciais.
 
-O sistema utiliza sensores e atuadores conectados ao ESP32 para monitorar o ambiente e executar ações automáticas que auxiliam no cultivo.
+O sistema utiliza sensores conectados a um ESP32 para coletar dados ambientais em tempo real e acionar atuadores automaticamente, garantindo condições adequadas para o cultivo em ambientes extremos.
 
 ---
 
 # 🌎 Problema
 
-A produção de alimentos em ambientes extremos exige monitoramento constante das condições ambientais.
+A produção de alimentos em ambientes extraterrestres representa um dos principais desafios para futuras missões espaciais.
 
-Variações inadequadas de temperatura, umidade ou luminosidade podem comprometer totalmente uma plantação.
+Fatores como temperatura, umidade, luminosidade e disponibilidade de água precisam ser monitorados constantemente para garantir a sobrevivência das plantações.
 
 ---
 
 # ✅ Solução
 
-O sistema realiza:
+O sistema monitora continuamente as condições da bioestufa e executa ações automáticas quando necessário.
 
-- Leitura de temperatura
-- Leitura de umidade do ar
-- Leitura de umidade do solo
-- Leitura de luminosidade
-- Irrigação automática
-- Controle de ventilação
-- Controle de iluminação artificial
-- Alertas críticos
+### Funcionalidades
+
+* Monitoramento de temperatura
+* Monitoramento da umidade do ar
+* Monitoramento da umidade do solo
+* Monitoramento da luminosidade
+* Irrigação automática
+* Controle de iluminação artificial
+* Controle de ventilação
+* Alertas críticos
+* Dashboard em tempo real
+* API REST para integração dos dados
+
+---
+
+# 🏗️ Arquitetura da Solução
+
+```text
+Sensores
+   ↓
+ESP32
+   ↓
+API REST Next.js
+   ↓
+Dashboard Web
+```
+
+Fluxo de dados:
+
+1. Sensores enviam informações ao ESP32.
+2. O ESP32 processa os dados.
+3. Os dados são enviados via Wi-Fi para a API REST.
+4. O Dashboard consome os dados da API.
+5. As informações são exibidas em tempo real.
 
 ---
 
 # 🛠️ Tecnologias Utilizadas
 
-- ESP32
-- Arduino Framework
-- PlatformIO
-- Wokwi
-- DHT22
-- Sensor de Umidade do Solo
-- Sensor LDR
-- OLED SSD1306
-- Servo Motor
-- LEDs
-- Buzzer
-- Wi-Fi
+### Hardware
+
+* ESP32
+* DHT22
+* Sensor de Umidade do Solo
+* Sensor LDR
+* OLED SSD1306
+* Servo Motor
+* LEDs
+* Buzzer
+
+### Software
+
+* Arduino Framework
+* PlatformIO
+* Wokwi
+* Next.js
+* TypeScript
+* API REST
+* Vercel
 
 ---
 
@@ -62,41 +96,105 @@ O sistema realiza:
 
 Responsável por:
 
-- Temperatura
-- Umidade do ar
-
----
+* Temperatura
+* Umidade do ar
 
 ## Sensor de Umidade do Solo
 
 Responsável por:
 
-- Controle da irrigação
-
----
+* Controle da irrigação
 
 ## Sensor LDR
 
 Responsável por:
 
-- Controle de luminosidade
+* Controle de luminosidade
 
 ---
 
 # ⚙️ Atuadores
 
-- Servo Motor
-- LEDs Indicadores
-- Buzzer
-- Display OLED
+## Servo Motor
+
+Controle da ventilação.
+
+## LED de Irrigação
+
+Indica quando a irrigação está ativa.
+
+## LED de Luz Artificial
+
+Indica quando a iluminação complementar está ativa.
+
+## LED de Alerta
+
+Indica situações críticas.
+
+## Buzzer
+
+Emite alertas sonoros em situações críticas.
+
+## Display OLED
+
+Exibe informações do sistema localmente.
 
 ---
 
-# 🔌 Comunicação
+# 🌐 API REST
 
-O ESP32 disponibiliza uma API REST local para consulta dos dados do sistema.
+A API REST recebe dados enviados pelo ESP32 e disponibiliza informações para o Dashboard.
 
-Exemplo:
+### Endpoint Principal
+
+```http
+POST /api/iot
+```
+
+Recebe os dados enviados pelo ESP32.
+
+```http
+GET /api/iot
+```
+
+Retorna todos os dados da BioEstufa.
+
+---
+
+# 📡 Endpoints JSON
+
+## GET /api/iot
+
+Retorna todos os dados do sistema.
+
+## GET /api/sensores
+
+Retorna:
+
+* temperatura
+* umidadeAr
+* umidadeSolo
+* luminosidade
+
+## GET /api/status
+
+Retorna:
+
+* status
+* alertaCritico
+
+## GET /api/atuadores
+
+Retorna:
+
+* irrigacaoAtiva
+* luzArtificialAtiva
+* alertaCritico
+* servoVentilacao
+
+---
+
+# 📄 Exemplo de Resposta
 
 ```json
 {
@@ -104,6 +202,10 @@ Exemplo:
   "umidadeAr": 45,
   "umidadeSolo": 62,
   "luminosidade": 40,
+  "irrigacaoAtiva": true,
+  "luzArtificialAtiva": false,
+  "alertaCritico": false,
+  "servoVentilacao": 90,
   "status": "NORMAL"
 }
 ```
@@ -112,65 +214,48 @@ Exemplo:
 
 # 📁 Estrutura do Projeto
 
-```txt
+```text
 src/
  └── main.cpp
 
 platformio.ini
-
 diagram.json
-
 wokwi.toml
-```
-
----
-
-# 🌐 Endpoints
-
-```http
-/api/sensores
-```
-
-```http
-/api/status
-```
-
-```http
-/ api/atuadores
-```
-
-```http
-/api/geral
 ```
 
 ---
 
 # ▶️ Como Executar
 
-## 1. Abrir no Wokwi
+## 1. Simulação no Wokwi
 
-Importar:
+Importar os arquivos:
 
-- diagram.json
-- wokwi.toml
-- src/main.cpp
+* diagram.json
+* wokwi.toml
+* src/main.cpp
 
----
+## 2. Executar a Simulação
 
-## 2. Iniciar Simulação
+Iniciar o projeto no Wokwi.
 
-Executar o projeto.
+## 3. Testar Sensores
 
----
+Alterar os valores dos sensores para observar:
 
-## 3. Alterar Sensores
+* Irrigação automática
+* Ventilação automática
+* Luz artificial
+* Alertas críticos
 
-Modificar valores dos sensores para observar:
+## 4. Dashboard
 
-- Irrigação automática
-- Ventilação
-- Luz artificial
-- Alertas
+Executar:
+
+```bash
+npm install
+npm run dev
+```
 
 ---
 
@@ -178,55 +263,72 @@ Modificar valores dos sensores para observar:
 
 ## Circuito ESP32
 
-![alt text](image.png)
+![Circuito](image.png)
+
+## Simulação Wokwi
+
+![Simulação](image-1.png)
+
+## Display OLED
+
+![OLED](image-2.png)
+
+## Dashboard
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
 
 ---
 
-## Simulação
+# 🔗 Links
 
-![alt text](image-1.png)
-
----
-
-## OLED
-
-![alt text](image-2.png)
-
----
-
-# 🔗 Dashboard Integrado
-
-Deploy:
+## Dashboard
 
 https://gs-systhesis-io-t-dashboard.vercel.app/
 
-GitHub:
+## Repositório Dashboard
 
 https://github.com/alc-joao/GS-Systhesis-IoT-Dashboard
+
+## Repositório IoT
+
+https://github.com/alc-joao/GS-Systhesis-IoT-BioEstufa
 
 ---
 
 # 🎥 Vídeo Pitch
 
-Adicionar link do vídeo.
+Adicionar link do vídeo de apresentação.
 
 ---
 
-# 📦 Entrega
+# 📦 Requisitos Atendidos
 
-O projeto contém:
+✅ ESP32
 
-- ESP32
-- Sensores
-- Atuadores
-- OLED
-- API REST
-- Dashboard
-- Simulação Wokwi
-- Documentação
+✅ Sensores
+
+✅ Atuadores
+
+✅ OLED SSD1306
+
+✅ Comunicação Wi-Fi
+
+✅ API REST
+
+✅ 4 Endpoints JSON documentados
+
+✅ Dashboard Web
+
+✅ Integração ESP32 → API → Dashboard
+
+✅ Simulação Wokwi
+
+✅ Documentação
 
 ---
 
 # 🌱 Systhesis BioEstufa Espacial
 
-Projeto acadêmico desenvolvido para a Global Solution FIAP.
+Projeto acadêmico desenvolvido para a Global Solution FIAP 2026.
