@@ -303,32 +303,6 @@ Adicionar link do vídeo de apresentação.
 
 ---
 
-# 📦 Requisitos Atendidos
-
-✅ ESP32
-
-✅ Sensores
-
-✅ Atuadores
-
-✅ OLED SSD1306
-
-✅ Comunicação Wi-Fi
-
-✅ API REST
-
-✅ 4 Endpoints JSON documentados
-
-✅ Dashboard Web
-
-✅ Integração ESP32 → API → Dashboard
-
-✅ Simulação Wokwi
-
-✅ Documentação
-
----
-
 # 🌱 Systhesis BioEstufa Espacial
 
 Projeto acadêmico desenvolvido para a Global Solution FIAP 2026.
