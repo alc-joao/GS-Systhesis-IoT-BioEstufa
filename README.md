@@ -279,6 +279,24 @@ npm run dev
 
 ![alt text](image-4.png)
 
+## Endpoints
+
+* /api/iot
+
+![alt text](image-8.png)
+
+* /api/sensores
+
+![alt text](image-5.png)
+
+* /api/atuadores
+
+![alt text](image-6.png)
+
+* api/status
+
+![alt text](image-7.png)
+
 ---
 
 # 🔗 Links
